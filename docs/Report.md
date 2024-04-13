@@ -24,5 +24,6 @@ date: May XX, 2024
 # Table of Contents
 1. [Executive Summary](#executive-summary)
 2. [Major Findings](#major-findings)
+2.1 [Steps to Reproduce](#steps-to-reproduce)
 3. [Indicators of Compromise](#indicators-of-compromise)
-4. [Description of the files](#description-of-the-files) 
+4. [Description of the files](#description-of-the-files)
