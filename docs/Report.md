@@ -24,32 +24,15 @@ date: May XX, 2024
 # Table of Contents
 1. [Executive Summary](#executive-summary)
 2. [Major Findings](#major-findings)
-2.1 [Steps to Reproduce](#steps-to-reproduce)
 3. [Indicators of Compromise](#indicators-of-compromise)
 4. [Description of the files](#description-of-the-files)
 
 
 # Execute summary
 
-...
+<!-- TODO -->
 
-We used Ghidra to perform static analysis over `ansibled` binary file.
+# Major Findings
 
-...
-
-We found a method that was being called with a string and a byte passed as argument. Upon analysing this function we discovered that it was performing XOR operation with a key (byte value argument).
-
-This function was deobfuscated in the following way
-
-<img src="./images/t_01_decoded_function.png" width="500">
-
-A python script was developed to test the function (available in `../scripts/decodeString.py/`),
-
-<img src="./images/t_02_test_function.png" width="500">
-
-As we can see it's converting translating into readable strings.
-We ran that function over all references found in guidra and the following 3 unique strings were decoded:
-
-<img src="./images/t_03_strings.png" width="500">
-
+For this project, we were given a DEB file with the name *ansible-core_2.14.3-1+ua_all.deb*, and it is also said that "name and version do not match the original package". Because of this we search the internet for the original packaged named *ansible-core_2.14.3-1_all.deb*.
 
