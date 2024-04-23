@@ -63,4 +63,6 @@ We also search for clear text using the `strings` tools.
 
 We discover that whatever this binary does it will at least involve **sockets** and that gives us a **clue to search for information such as addresses and port numbers**. Not only that, it also handles some sort of **file writing and reading**, as well as the **suspicious search for process IDs** and the apparent access to a file with a given PID in the _/proc_ directory.
 
+Because this appears to be reading and writing, we can assume that there will ne *syscalls*, as so we run `strace`
+
 TODO
