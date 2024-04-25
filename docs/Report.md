@@ -63,6 +63,20 @@ We also search for clear text using the `strings` tools.
 
 We discover that whatever this binary does it will at least involve **sockets** and that gives us a **clue to search for information such as addresses and port numbers**. Not only that, it also handles some sort of **file writing and reading**, as well as the **suspicious search for process IDs** and the apparent access to a file with a given PID in the _/proc_ directory.
 
-Because this appears to be reading and writing, we can assume that there will ne *syscalls*, as so we run `strace`
+Because this appears to be reading and writing, we can assume that there will ne *syscalls*, as so we run `strace` to discovery what is being accessed during execution.
+
+![Strace of ansibled](./images/13_strace_ansibled.png)
+
+The first thing we can see is the binary trying to access a file with an unusual name _qhu*dkvlgi'a+ijfn_ but this is not found. Later it will try to again access it as well as another file at the _tmp_ directory with the name _guide.pdf_.
+
+These files are never found, meaning their do not yet exist? This appears to trigger the creation of a socket object.
+
+![Socket and PDF download](./images/14_strace_ansibled_recv_pdf.png)
+
+As we can see, the binary tem establishes a connection with the IP _192.168.160.143_, and with this IP it will proceed to make a GET request to the endpoint _/guide.pdf_. We can now assume that in the beginning the binary was checking for the existence of this file, and given that it did not exist, it will now try to download it.
+
+What we then see (in the blocks in blue), is the response from the server with the contents for the _guide.pdf_ and the binary writing them to the file in _tmp_.
+
+![Reading and transforming guide.pdf](./images/15_strace_ansibled_efem_file_PDF_to_ELF.png)
 
 TODO
