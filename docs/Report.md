@@ -49,7 +49,7 @@ The important bit of this descriptor is the binary file it executes, explicit at
 We can make sure that this is indeed an additional file an we are comparing the right packages by using the `deephash` tool to compare the hash of multiple files. Doing this reveals equal hash ensuring that this are indeed the same packages and that file is extra.
 
 ![Hash comparison](./images/04_matching_hash_with_additional_binary_file.png)
-
+-see
 ## Ansibled File Analysis
 
 ![File type](./images/05_exiftool_architecture_type_ansibled.png)
@@ -79,4 +79,12 @@ What we then see (in the blocks in blue), is the response from the server with t
 
 ![Reading and transforming guide.pdf](./images/15_strace_ansibled_efem_file_PDF_to_ELF.png)
 
-TODO
+After downloading the PDF file, the binary reads it, starting from a predefined offset as we can see from the _lseek_ function in the second block, and write the content a new file called _ansibled_ using the _memfd\_create_. From the _man_ page of _memfd\_create_, get the following message:
+
+> **memfd_create()** creates an anonymous file and returns a file descriptor
+> that refers to it.  The file behaves like a regular file, and so can be
+> modified, truncated, memory-mapped, and so on.  However, unlike a regu‐
+> lar file, it lives in RAM and has a volatile backing storage.  Once all
+> references  to  the  file  are  dropped,  it is automatically released.
+
+In the last section (within the purple box), it creates a new file called _ansibled.lock_ it then kills a thread, **sets  the  effective  user ID of the calling process to 0**  and sets the **real user ID, the effective user ID, and the saved set-user-ID of the calling process**.
