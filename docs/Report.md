@@ -127,3 +127,9 @@ Overall, the code appears to be malicious and designed to hack into devices, ste
 ![Python SSH library](./images/16_05_malware_strings.png)
 
 Further evidence of this behavior is the use of _Paramiko_, which is a Python library that provides a comprehensive set of tools for working with Secure Shell (SSH) protocols. It allows Python programs to connect to, interact with, and manage remote servers securely over SSH.
+
+Not only that, it download another file from a dynamical loaded address. This `scan.py` appears to accept three parameters: "376", "B", a string and "2".
+
+Then, it will update the _/etc/resolv.conf_ file with two new nameserver addresses.
+
+Finally, it clear not only the bash history but also the log of any users that may be using the system by deleting the _/var/log/wtmp_.
