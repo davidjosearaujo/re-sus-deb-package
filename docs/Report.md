@@ -21,17 +21,20 @@ author: Tiago Silvestre - 103554, David Araújo - 93444
 date: May XX, 2024
 ---
 
+
 # Table of Contents
 - [Table of Contents](#table-of-contents)
 - [Execute summary](#execute-summary)
 - [Major Findings](#major-findings)
   - [Ansibled File Analysis](#ansibled-file-analysis)
   - [Binary from PDF](#binary-from-pdf)
-
+  - [Traffic Capture and Remote Communications](#traffic-capture-and-remote-communications)
 
 # Execute summary
 
-<!-- TODO -->
+
+
+\pagebreak
 
 # Major Findings
 
@@ -114,15 +117,22 @@ As we progress through the list of strings, we eventually observe the utilizatio
 ![Yet another download](./images/16_03_malware_strings.png)
 
 In the next section we can see the following:
-- Lines 1-2: These lines appear to show memory addresses and then the names of corresponding programs. Busybox is a lightweight Unix-based operating system. Shell refers to the command line interface.
-- Lines 4-9: These lines appear to show output messages that include placeholders, represented by "%s". These placeholders are likely filled with data about hacked devices, including their IP addresses, ports, usernames, and passwords.
-- Lines 11-12: These lines reference "sh" and "shell" which are likely referring to the command line interface, where the commands to remove the temporary directory are being run.
-- Lines 14-17: These lines reference processes being killed. "pkill" and "killall" are commands used to terminate processes.
-- Lines 19-22: These lines appear to show output messages about a payload being sent, a device being infected and a device not being infected.
-- Lines 24-27: This line appears to show a formatted string, potentially used in a HTTP request.
-Lines 29-30: These lines appear to be commands to clear the bash history, which is the log of commands entered into the command line interface.
 
-Overall, the code appears to be malicious and designed to hack into devices, steal login credentials and then cover its tracks by deleting the command history. We can't however, be certain that that is its purpose.
+- Lines 1-2: These lines appear to show memory addresses and then the names of corresponding programs. Busybox is a lightweight Unix-based operating system. Shell refers to the command line interface.
+
+- Lines 4-9: These lines appear to show output messages that include placeholders, represented by "%s". These placeholders are likely filled with data about hacked devices, including their IP addresses, ports, usernames, and passwords.
+
+- Lines 11-12: These lines reference "sh" and "shell" which are likely referring to the command line interface, where the commands to remove the temporary directory are being run.
+
+- Lines 14-17: These lines reference processes being killed. "pkill" and "killall" are commands used to terminate processes.
+
+- Lines 19-22: These lines appear to show output messages about a payload being sent, a device being infected and a device not being infected.
+
+- Lines 24-27: This line appears to show a formatted string, potentially used in a HTTP request.
+
+- Lines 29-30: These lines appear to be commands to clear the bash history, which is the log of commands entered into the command line interface.
+
+Overall, the code appears to be designed to cover its tracks by deleting the command history. We can't however, be certain that that is its purpose.
 
 ![Python SSH library](./images/16_05_malware_strings.png)
 
@@ -134,6 +144,22 @@ Then, it will update the _/etc/resolv.conf_ file with two new nameserver address
 
 Finally, it clear not only the bash history but also the log of any users that may be using the system by deleting the _/var/log/wtmp_.
 
-TODO
-- ver os ficheiros que ele faz download: a.sh e scan.py
-- capturar tráfego com Wireshark para ver que requests é que ele está a fazer
+\pagebreak
+
+## Traffic Capture and Remote Communications
+
+Since from the start we noticed a pattern behavior of communications with a remote host, we decided to capture the traffic during one of our `strace` sessions.
+
+![Traffic capture](./images/18_01_traffic_capture.png)
+
+This shown us information we already knew, namely the GET request for the PDF file. But also gave us a little more insight regarding the _SYN_ message sent every 5 seconds by the binary to the remote host.
+
+![Binary waiting connection](./images/18_02_waiting.png)
+
+The table shows that there were multiple attempts to establish a connection between the two devices. The first attempt (line 528) was initiated by the device with the IP address 172.17.0.2 (sandbox). However, the connection attempt was rejected by the device with the IP address 192.168.160.143 (line 529). The subsequent attempts (lines 530, 532, 533, and 535) were also unsuccessful.
+
+![Host mapping](./images/17_discovery_malicious_host.png)
+
+Because of this, we tried a simple map of the host using `nmap`. Although this goes outside of the scope of this report, we could see that the port _8000_ was host a simple HTML page for what appeared to be a CTF contest.
+
+We could've _fuzzed_ the remote host address with the goal of find some other available files, but then again, this would be outside of the scope and our interest was the _a.sh_ shell script and the _scan.py_ python script, and both of these are not available.
