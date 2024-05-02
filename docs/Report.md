@@ -133,3 +133,7 @@ Not only that, it download another file from a dynamical loaded address. This `s
 Then, it will update the _/etc/resolv.conf_ file with two new nameserver addresses.
 
 Finally, it clear not only the bash history but also the log of any users that may be using the system by deleting the _/var/log/wtmp_.
+
+TODO
+- ver os ficheiros que ele faz download: a.sh e scan.py
+- capturar tráfego com Wireshark para ver que requests é que ele está a fazer
