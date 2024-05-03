@@ -30,15 +30,23 @@ date: May XX, 2024
   - [Binary from PDF](#binary-from-pdf)
   - [Traffic Capture and Remote Communications](#traffic-capture-and-remote-communications)
 
-# Execute summary
+# Executive summary
+The purpose of this report is to show how a suspicious DEB package was analyzed. This DEB package labeled as *ansible-core_2.14.3-1+ua_all.deb* was being distributed inside the Campus. The package was not formally evaluated and the only information given was that the signature didn't match with the original package.
 
+In order to analyze the package we used mainly the following tools:
+- Guidra - Static binary analysis.
+- strace - Dynamic analysis.
 
+During the analysis the methodology adopted was to use virtual machines whenever we executed the code present in the package.
+
+We did some findings and discovered that it was downloading suspicius files from the internet, such PDF's with embedded ELF files.
+The following section explains step by step how the DEB package was analyzed.
 
 \pagebreak
 
 # Major Findings
 
-For this project, we received a DEB file labeled *ansible-core_2.14.3-1+ua_all.deb*, along with a note indicating that the name and version don't align with the original package. As a result, we conducted an internet search to locate the original package, identified as *ansible-core_2.14.3-1_all.deb*.
+Given that the signatures were different, we conducted an internet search to locate the original package, identified as *ansible-core_2.14.3-1_all.deb*.
 
 ![Directory Struture](./images/01_dir_struct_different.png)
 
