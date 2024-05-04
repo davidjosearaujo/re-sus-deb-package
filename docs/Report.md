@@ -34,7 +34,7 @@ date: May XX, 2024
 The purpose of this report is to show how a suspicious DEB package was analyzed. This DEB package labeled as *ansible-core_2.14.3-1+ua_all.deb* was being distributed inside the Campus. The package was not formally evaluated and the only information given was that the signature didn't match with the original package.
 
 In order to analyze the package we used mainly the following tools:
-- Guidra - Static binary analysis.
+- Ghidra - Static binary analysis.
 - strace - Dynamic analysis.
 
 During the analysis the methodology adopted was to use virtual machines whenever we executed the code present in the package.
@@ -63,7 +63,7 @@ We can verify that this is indeed an additional file and ensure we are comparing
 ![Hash comparison](./images/04_matching_hash_with_additional_binary_file.png)
 
 ## Ansibled File Analysis
-
+### Static analysis
 ![File type](./images/05_exiftool_architecture_type_ansibled.png)
 
 We initiate the process by employing `exiftool` to ascertain the file type and the CPU architecture it is designed to run on. Our examination reveals that it is an ELF file intended for execution on an x86 64-bit architecture.
@@ -75,6 +75,22 @@ Additionally, we employ the `strings` tool to search for any clear text within t
 ![Strings inside ansibled (2)](./images/06_strings_ansibled.png)
 
 We uncover that this binary is likely involved in operations related to **sockets**, indicating a potential need to search for information such as **addresses and port numbers**. Moreover, it appears to handle **file writing and reading tasks**, along with suspicious activities like searching for process IDs and accessing files associated with specific PIDs within the _/proc_ directory.
+
+We also used Ghidra to perform a more detailed static analysis over `ansibled` binary.
+Upon opening the binary we found a function being called multiple times (in different places of the code), this function received a string and a byte as argument. Upon analyzing it, we discovered that it was performing XOR operation with a key (byte value argument). 
+
+This function was deobfuscated in the following way
+
+![](./images/t_01_decoded_function.png)
+
+A python script was developed to test the function (available in `../scripts/decodeString.py/`).
+As we can see it's converting into readable strings.
+We ran that function over all references found in ghidra and the following 3 unique strings were decoded:
+
+![](./images/t_03_strings.png)
+
+
+### Dynamic analysis
 
 Given the apparent involvement in reading and writing operations, we can infer the presence of **syscalls**. Consequently, we utilize `strace` to trace the execution and discern the accessed resources during runtime.
 
