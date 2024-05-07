@@ -18,35 +18,40 @@
 geometry: margin=25mm
 title: Reverse Engineering - Suspicious Deb package
 author: Tiago Silvestre - 103554, David Araújo - 93444
-date: May XX, 2024
+date: May 07, 2024
 ---
 
 
 # Table of Contents
 - [Table of Contents](#table-of-contents)
-- [Execute summary](#execute-summary)
+- [Executive summary](#executive-summary)
 - [Major Findings](#major-findings)
   - [Ansibled File Analysis](#ansibled-file-analysis)
+    - [Static analysis](#static-analysis)
+    - [Dynamic analysis](#dynamic-analysis)
   - [Binary from PDF](#binary-from-pdf)
   - [Traffic Capture and Remote Communications](#traffic-capture-and-remote-communications)
 
 # Executive summary
-The purpose of this report is to show how a suspicious DEB package was analyzed. This DEB package labeled as *ansible-core_2.14.3-1+ua_all.deb* was being distributed inside the Campus. The package was not formally evaluated and the only information given was that the signature didn't match with the original package.
 
-In order to analyze the package we used mainly the following tools:
+The aim of this report is to outline the analysis conducted on a suspicious DEB package. Specifically, the package identified as *ansible-core_2.14.3-1+ua_all.deb* was discovered circulating within the campus environment. Notably, this package had not undergone formal evaluation, and the sole indication provided was a signature mismatch with the original package.
+
+In order to analyze the package we mainly used the following tools:
+
 - Ghidra - Static binary analysis.
-- strace - Dynamic analysis.
+- iaito - Static binary analysis. 
+- `strace` - Dynamic analysis.
+- `lstrace` - Dynamic analysis.
 
-During the analysis the methodology adopted was to use virtual machines whenever we executed the code present in the package.
+Throughout the analysis, our methodology involved employing virtual machines or containers (specifically, a Kali Vagrant box and a Remnux Docker container) whenever executing the code contained within the package.
 
-We did some findings and discovered that it was downloading suspicius files from the internet, such PDF's with embedded ELF files.
-The following section explains step by step how the DEB package was analyzed.
+Our investigation yielded significant findings, notably the package's activity of downloading suspicious files from the internet, including PDFs containing embedded ELF files. The subsequent section provides a detailed, step-by-step account of the DEB package analysis.
 
 \pagebreak
 
 # Major Findings
 
-Given that the signatures were different, we conducted an internet search to locate the original package, identified as *ansible-core_2.14.3-1_all.deb*.
+Given that the signatures were said to be different in the initial guide, we conducted an internet search to locate the original package, identified as *ansible-core_2.14.3-1_all.deb*.
 
 ![Directory Struture](./images/01_dir_struct_different.png)
 
