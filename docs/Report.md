@@ -30,6 +30,7 @@ date: May 07, 2024
     - [Static analysis](#static-analysis)
     - [Dynamic analysis](#dynamic-analysis)
   - [Binary from PDF](#binary-from-pdf)
+- [Indicators of Compromise](#indicators-of-compromise)
   - [Traffic Capture and Remote Communications](#traffic-capture-and-remote-communications)
 
 # Executive summary
@@ -175,9 +176,11 @@ Finally, it clear not only the bash history but also the log of any users that m
 
 \pagebreak
 
+# Indicators of Compromise
+
 ## Traffic Capture and Remote Communications
 
-Since from the start we noticed a pattern behavior of communications with a remote host, we decided to capture the traffic during one of our `strace` sessions.
+Since from the start we noticed a pattern behavior of communications with a remote, we decided to capture the traffic during one of our `strace` sessions. This also allowed us to clearly see unusual outbound network traffic as an indicator of compromise, adding to the already known suspicious file system access.
 
 ![Traffic capture](./images/18_01_traffic_capture.png)
 
